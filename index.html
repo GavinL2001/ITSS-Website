@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OUDS Game</title>
+        <link rel="icon" type="image/x-icon" href="https://files.gavinliddell.us/api/public/dl/MzmJ9Mpj/ITSS-3312/Webpage%20Assets/icons8-playing-card-16-color.png">
+        <style>
+            html {
+                background: url("https://files.gavinliddell.us/api/public/dl/Dbuj9DZw/ITSS-3312/Webpage%20Assets/dice_upscayl_4x_ultrasharp.webp") no-repeat center fixed;
+                background-color: #0d420d;
+                background-size: cover;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            .main {
+                display: table;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                color: white;
+            }
+
+            .container {
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            .rules {
+                margin-left: auto;
+                margin-right: auto;
+                width: fit-content;
+                background-color: #181f74;
+                border-radius: 20px;
+                padding: 10px 10px;
+            }
+
+            .rulesHeader {
+                text-align: center;
+            }
+
+            ul {
+                font-size: 18px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+
+            h3 {
+                font-size: 22px;
+            }
+
+            .button {
+                margin: auto;
+                display: block;
+                background-color: red;
+                color: white;
+                border: none;
+                font-size: 20px;
+                padding: 5px 20px;
+            }
+
+            .button:hover {
+                background-color: rgb(200, 0, 0);
+                color: white;
+            }
+
+            .game-container {
+                background-color: #181f74;
+                border-radius: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                max-width: 550px;
+                margin: auto;
+                text-align: center;
+            }
+
+            .initiateRoll1 {
+                background-color: #181f74;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                max-width: 250px;
+                margin: auto;
+                text-align: center;
+            }
+
+            .roll {
+                font-size: 2em;
+            }
+
+            .points {
+                font-size: 1.5em;
+                margin: 10px 10px;
+            }
+
+            .controls {
+                margin: 20px 10px;
+                font-size: 1.5em;
+            }
+
+            .controls input {
+                padding: 10px;
+                font-size: 1em;
+                margin: 5px;
+            }
+
+            .controls select {
+                font-size: 1em;
+            }
+            
+            .result {
+                font-size: 1.5em;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="main" id="mainRules">
+            <div class="container">
+                <div class="rules">
+                    <h1 class="rulesHeader">
+                        Welcome to Over Under Double Same (OUDS)!
+                    </h1>
+                    <h2 class="rulesHeader">
+                        Overview
+                    </h2>
+                    <ul>
+                        <li>The game is played by rolling 2 dice twice.</li>
+                        <li>Every player begins the game with 10 points.</li>
+                        <li>The object of the game is to accumulate more points.</li>
+                        <li>If your point balance falls to zero or less, the game automatically ends.</li>
+                    </ul>
+                    <h2 class="rulesHeader">
+                        Game Instructions and Rules
+                    </h2>
+                    <ul>
+                        <li>When the first roll occurs, the Roll 1 dice values and sum are set.</li>
+                        <li>After Roll 1, the player decides if the Roll 2 sum is likely to be over or under the Roll 1 sum.</li>
+                        <li>The player makes a wager based on their decision of over or under.</li>
+                        <li>Wagers can be from 0 to 10 points.</li>
+                        <li>If the player bets OVER or UNDER correctly, the player wins the amount of the wager,<br>
+                            and that value is added to their point total.</li>
+                        <li>If the player bets OVER or UNDER incorrectly, the player loses points in the amount of the wager,<br>
+                        and that value is subtracted from the player's point total.</li>
+                    </ul>
+                    <h2 class="rulesHeader">
+                        Special Cases
+                    </h2>
+                    <ul>
+                        <li>If Roll 2 yields a double (e.g., 2,2 or 5,5), OR Roll 2 sum is the same as the Roll 1 sum,<br>
+                            the round is lost and the amount of the wager is subtracted from the player's point total.</li>
+                        <li>Note that the round is lost irrespective of the outcome of the over/under bet.</li>
+                    </ul>
+                    <h3 class="rulesHeader">
+                        And that's the name of the game - OVER UNDER DOUBLE SAME!
+                    </h3>
+                    <button class="button" onclick="startGame()">
+                        Accept the Terms and Conditions
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main" style="visibility: hidden;" id="mainGame">
+            <div class="container">
+                <div class="initiateRoll1" style="display: block;" id="roll1Button">
+                    <button class="button" onclick="execRoll1()">Roll First Pair of Dice</button>
+                </div>
+                <div class="game-container" style="display: none;" id="game">
+                    <div class="points">
+                        Points: <span id="points">10</span>
+                    </div>
+                    <br>
+                    <div class="roll" id="roll1">
+                        First Roll: <span id="r1d1">-</span> + <span id="r1d2">-</span> = <span id="r1sum">-</span>
+                    </div>
+                    <div class="roll" id="roll2" style="display: none;">
+                        Second Roll: <span id="r2d1">-</span> + <span id="r2d2">-</span> = <span id="r2sum">-</span>
+                    </div>
+
+                    <div class="result" id="result" style="display: none;">
+                        <br>
+                        <span id="outcome">-</span> <span id="WL">-</span>
+                        <br>
+                    </div>
+                    <div class="controls">
+                        <div id="betting-controls" style="display: block; align-items: center;">
+                            <label for="bet">Wager Points (1-10):</label>
+                            <input type="number" id="bet" min="1" max="10">
+                            <br>
+                            <br>
+                            <label for="guess">Bet on next sum being:</label>
+                            <select id="guess">
+                                <option value="over">Over</option>
+                                <option value="under">Under</option>
+                            </select>
+                            <br>
+                            <br>
+                            <button class="button" onclick="makeGuess()">Roll Second Pair of Dice</button>
+                        </div>
+                        <button class="button" id="reload" onclick="resetGame()" style="display: none;">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let points = 10;
+            let firstRoll = 0;
+
+            function startGame() {
+                document.getElementById('mainRules')?.remove();
+                document.getElementById('mainGame')?.style.setProperty('visibility', 'visible');
+            }
+
+            function execRoll1() {
+                toggleVisibility('roll1Button', false);
+                toggleVisibility('game', true);
+
+                firstRoll = rollDice();
+                updateRollDisplay('r1', firstRoll);
+            }
+
+            function rollDice() {
+                const d1 = Math.floor(Math.random() * 6) + 1;
+                const d2 = Math.floor(Math.random() * 6) + 1;
+                return { d1, d2, sum: d1 + d2 };
+            }
+
+            function makeGuess() {
+                const bet = parseInt(document.getElementById('bet').value, 10) || 0;
+                const guess = document.getElementById('guess').value;
+
+                const secondRoll = rollDice();
+                toggleVisibility('roll2', true);
+                toggleVisibility('result', true);
+                toggleVisibility('betting-controls', false);
+                toggleVisibility('reload', true);
+
+                updateRollDisplay('r2', secondRoll);
+
+                const outcome = getOutcome(firstRoll, secondRoll);
+                const evalResult = evaluateGuess(outcome, guess);
+
+                updateOutcomeDisplay(outcome, evalResult, bet);
+                points += evalResult === "W" ? bet : -bet;
+
+                document.getElementById('points').innerText = points;
+            }
+
+            function getOutcome(firstRoll, secondRoll) {
+                if (firstRoll.sum === secondRoll.sum) return "SAME";
+                if (secondRoll.d1 === secondRoll.d2) return "DOUBLE";
+                return firstRoll.sum > secondRoll.sum ? "UNDER" : "OVER";
+            }
+
+            function evaluateGuess(outcome, guess) {
+                if ((outcome === "OVER" && guess === "over") || (outcome === "UNDER" && guess === "under")) {
+                    return "W";
+                }
+                return "L";
+            }
+
+            function updateRollDisplay(prefix, roll) {
+                ['d1', 'd2', 'sum'].forEach(key => {
+                    document.getElementById(`${prefix}${key}`).innerText = roll[key] || '-';
+                });
+            }
+
+            function updateOutcomeDisplay(outcome, evalResult, bet) {
+                document.getElementById('outcome').innerText = `Outcome was ${outcome}.`;
+                document.getElementById('WL').innerText = evalResult === "W"
+                    ? "Congratulations, you won!"
+                    : "Sorry, you lost.";
+            }
+
+            function toggleVisibility(elementId, isVisible) {
+                const element = document.getElementById(elementId);
+                if (element) element.style.display = isVisible ? 'block' : 'none';
+            }
+
+            function resetGame() {
+                points = 10;
+                firstRoll = rollDice();
+
+                document.getElementById('points').innerText = points;
+                ['r1', 'r2'].forEach(prefix => resetRollDisplay(prefix));
+
+                toggleVisibility('betting-controls', true);
+                toggleVisibility('reload', false);
+                toggleVisibility('result', false);
+                toggleVisibility('roll2', false);
+
+                updateRollDisplay('r1', firstRoll);
+            }
+
+            function resetRollDisplay(prefix) {
+                updateRollDisplay(prefix, { d1: '-', d2: '-', sum: '-' });
+            }
+        </script>
+    </body>
+</html>
